@@ -22,10 +22,21 @@ public abstract class LoggingUtils {
 
 	static synchronized public List getFileAppenders() {
 		List list = new ArrayList();
+		Enumeration el = LogManager.getCurrentLoggers();
+		while(el.hasMoreElements()) {
+			Logger l = (Logger)el.nextElement();
+			Enumeration e = l.getAllAppenders();
+			while (e.hasMoreElements()) {
+				Appender a = (Appender) e.nextElement();
+				if (a instanceof FileAppender) {
+					list.add(a);
+				}
+			}
+		}
 		Enumeration e = LogManager.getRootLogger().getAllAppenders();
-		while(e.hasMoreElements()) {
+		while (e.hasMoreElements()) {
 			Appender a = (Appender) e.nextElement();
-			if(a instanceof FileAppender) {
+			if (a instanceof FileAppender) {
 				list.add(a);
 			}
 		}
@@ -33,10 +44,21 @@ public abstract class LoggingUtils {
 	}
 
 	static synchronized public FileAppender getFileAppender(String appenderName) {
+		Enumeration el = LogManager.getCurrentLoggers();
+		while(el.hasMoreElements()) {
+			Logger l = (Logger) el.nextElement();
+			Enumeration e = l.getAllAppenders();
+			while (e.hasMoreElements()) {
+				Appender a = (Appender) e.nextElement();
+				if (a instanceof FileAppender && a.getName().equals(appenderName)) {
+					return (FileAppender) a;
+				}
+			}
+		}
 		Enumeration e = LogManager.getRootLogger().getAllAppenders();
-		while(e.hasMoreElements()) {
+		while (e.hasMoreElements()) {
 			Appender a = (Appender) e.nextElement();
-			if(a instanceof FileAppender && a.getName().equals(appenderName)) {
+			if (a instanceof FileAppender && a.getName().equals(appenderName)) {
 				return (FileAppender) a;
 			}
 		}
